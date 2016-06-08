@@ -1,7 +1,9 @@
+import Immutable from 'immutable'
+
 // ------------------------------------
 // Constants
 // ------------------------------------
-export const COUNTER_INCREMENT = 'COUNTER_INCREMENT'
+export const COUNTER_INCREMENT = 'COUNTERINCREMENT'
 
 // ------------------------------------
 // Actions
@@ -10,6 +12,13 @@ export function increment (value = 1) {
   return {
     type: COUNTER_INCREMENT,
     payload: value
+  }
+}
+
+export function loadData() {
+  return {
+    type: 'LOAD.DATA',
+    payload: ''
   }
 }
 
@@ -34,20 +43,26 @@ export const doubleAsync = () => {
 
 export const actions = {
   increment,
-  doubleAsync
+  doubleAsync,
+  loadData
 }
 
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
 const ACTION_HANDLERS = {
-  [COUNTER_INCREMENT]: (state, action) => state + action.payload
+  [COUNTER_INCREMENT]: (state, action) => state.update('count', (d) => d + 1),
+  'LOAD.DATA': (state, action) => state,
+  'LOAD.DATA.SUCCESS': (state, {payload}) => state.set('data', payload)
 }
 
 // ------------------------------------
 // Reducer
 // ------------------------------------
-const initialState = 0
+const initialState = Immutable.fromJS({
+  count: 0,
+  data: null
+})
 export default function counterReducer (state = initialState, action) {
   const handler = ACTION_HANDLERS[action.type]
 

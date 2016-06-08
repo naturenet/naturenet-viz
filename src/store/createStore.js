@@ -3,11 +3,15 @@ import { routerMiddleware } from 'react-router-redux'
 import thunk from 'redux-thunk'
 import makeRootReducer from './reducers'
 
+import createSagaMiddleware from 'redux-saga'
+const sagaMiddleware = createSagaMiddleware()
+import sagas from './sagas'
+
 export default (initialState = {}, history) => {
   // ======================================================
   // Middleware Configuration
   // ======================================================
-  const middleware = [thunk, routerMiddleware(history)]
+  const middleware = [thunk, routerMiddleware(history), sagaMiddleware]
 
   // ======================================================
   // Store Enhancers
@@ -32,6 +36,8 @@ export default (initialState = {}, history) => {
     )
   )
   store.asyncReducers = {}
+
+  sagaMiddleware.run(sagas)
 
   if (module.hot) {
     module.hot.accept('./reducers', () => {
