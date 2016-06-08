@@ -88,6 +88,9 @@ class ActivitiesOverTime extends Component {
   }
 }
 
+import { Tile } from './common'
+import {Grid, Row, Col} from 'react-flexbox-grid'
+
 @pure
 export default class ActivitiesViz extends Component {
 
@@ -96,10 +99,11 @@ export default class ActivitiesViz extends Component {
     if (!data)
       return <div>Loading...</div>
     else
-      return <div>
-        <h1>Activities</h1>
-        <OpenVsCompletedActivities data={data}/>
+      return <Row>
+        <Tile title='Activities'>
+          <OpenVsCompletedActivities data={data}/>
+        </Tile>
         { false && <ActivitiesOverTime data={data}/> }
-      </div>
+      </Row>
   }
 }

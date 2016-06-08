@@ -52,19 +52,20 @@ class ObservationsOverTime extends Component {
        <YAxis/>
        <CartesianGrid strokeDasharray="3 3"/>
        <Tooltip/>
-              
+
        <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{r: 8}}/>
 
       </LineChart>
 
     return <div>
-      <h1>Observations over time ({unit})</h1>
       { chart }
     </div>
   }
 }
 
+
 import {Grid, Row, Col} from 'react-flexbox-grid'
+import { Tile } from './common'
 
 @pure
 export default class ObservationsViz extends Component {
@@ -74,17 +75,25 @@ export default class ObservationsViz extends Component {
     if (!data)
       return <div>Loading...</div>
     else
-      return <div>
-        <h1>Observations</h1>
-        <div>Number of observations: {_.keys(data).length}</div>
-        <Row>
-          <Col xs={12} md={6}>
+      return <Row>
+        <Tile title='Observations by months'>
             <ObservationsOverTime data={data} unit='month'/>
-          </Col>
-          <Col xs={12} md={6}>
+        </Tile>
+        <Tile title='Observations by days'>
             <ObservationsOverTime data={data} unit='day'/>
-          </Col>
-        </Row>
-      </div>
+        </Tile>
+      </Row>
+      // return <Container>
+      //     <h1>Observations</h1>
+      //     <div>Number of observations: {_.keys(data).length}</div>
+      //     <Row>
+      //       <Col xs={12} md={6}>
+      //         <ObservationsOverTime data={data} unit='month'/>
+      //       </Col>
+      //       <Col xs={12} md={6}>
+      //         <ObservationsOverTime data={data} unit='day'/>
+      //       </Col>
+      //     </Row>
+      // </Container>
   }
 }
