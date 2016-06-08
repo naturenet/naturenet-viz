@@ -2,8 +2,10 @@ import React, { Component } from 'react'
 import _ from 'lodash'
 import pure from 'pure-render-decorator'
 
-import {PieChart, Pie} from 'recharts'
-import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts'
+import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+  ResponsiveContainer, ComposedChart, Area, Bar, PieChart, Pie, Dot, Surface, Rectangle,
+  Layer, Curve
+} from 'recharts'
 
 @pure
 class OpenVsCompletedActivities extends Component {
@@ -37,6 +39,8 @@ import moment from 'moment'
 
 import { binByTime } from './utils'
 
+
+
 @pure
 class ObservationsOverTime extends Component {
 
@@ -44,7 +48,6 @@ class ObservationsOverTime extends Component {
     const { data, unit = 'month' } = this.props
 
     const input = binByTime(data, 'updated_at', unit)
-    // console.log('input', input)
 
     const chart = <LineChart width={600} height={300} data={input}
             margin={{top: 5, right: 30, left: 20, bottom: 5}}>
@@ -59,6 +62,105 @@ class ObservationsOverTime extends Component {
 
     return <div>
       { chart }
+    </div>
+  }
+}
+
+
+@pure
+class ObservationsByUsers extends Component {
+
+  computeFeatures(){
+
+    const { data } = this.props
+
+    const groups = _(data)
+        .groupBy('observer')
+        .value()
+
+    const fs = _(groups)
+      .map((d, key) => {
+
+        const timeStamps = _.map(d, 'updated_at')
+        const firstObservationTimeStamp = _.min(timeStamps)
+        const activeDays = moment(_.max(timeStamps)).diff(firstObservationTimeStamp, 'day')
+        const daysSinceFirstObservation = _.map(timeStamps, (t) => moment(t).diff(firstObservationTimeStamp, 'day'))
+
+        return {
+          id: key,
+          activeDays,
+          daysSinceFirstObservation
+        }
+      })
+      .sortBy('activeDays')
+      .reverse()
+      .value()
+
+    console.log('fs', fs)
+    return {
+      people: fs,
+      summary: {
+        numberOfPeople: fs.length
+      }
+    }
+  }
+
+  render(){
+
+    const features = this.computeFeatures()
+
+    const Person = ({data}) => {
+
+      const IndividualObservations = ({daysArray}) =>
+        <Layer>
+          {
+            _.map(daysArray, (d) => {
+              return <Dot cx={d} cy={2} r={1} fill="#333333"/>
+            })
+          }
+        </Layer>
+
+      const ActiveDuration = ({days}) =>
+        <Rectangle x={0} y={0} width={days} height={5} fill="#00ff73"/>
+
+      return <Layer>
+        <Dot cx={2.5} cy={-3} r={2.5} fill="#ff7300"/>
+        <ActiveDuration days={data.activeDays}/>
+        <IndividualObservations daysArray={data.daysSinceFirstObservation}/>
+      </Layer>
+    }
+
+    const people = _.map(features.people, (d, i)=>{
+      return <Layer transform={`translate(0, ${i*6})`}>
+          <Person data={d}/>
+        </Layer>
+    })
+
+    const grid = <Layer>
+        { _.map([100,200,300], (x) => {
+            return <g>
+              <Curve type='linear' points={[{x,y:0},{x,y:380}]} stroke="#aaaaaa"/>
+              <text x={x+2} y={380}>{x} days</text>
+            </g>
+        })}
+    </Layer>
+
+    return <div style={{width:'100%', height:'100%'}}>
+      <div>
+        { features.summary.numberOfPeople } users
+      </div>
+      <Surface width={800} height={400}>
+        { people }
+        { grid }
+      </Surface>
+      <div>
+      This is a custom visualization to show the active period of each user. The
+      active period is defined as the period between the first and the
+      most recent observation. The length of the period is represented by the
+      length of each horizontal bar. The first observation is represented by
+      a large, orange dot. Each subsequent observation is represented by a
+      small, black dot.
+      </div>
     </div>
   }
 }
@@ -82,18 +184,9 @@ export default class ObservationsViz extends Component {
         <Tile title='Observations by days'>
             <ObservationsOverTime data={data} unit='day'/>
         </Tile>
+        <Tile title='User active period based on observations'>
+            <ObservationsByUsers data={data}/>
+        </Tile>
       </Row>
-      // return <Container>
-      //     <h1>Observations</h1>
-      //     <div>Number of observations: {_.keys(data).length}</div>
-      //     <Row>
-      //       <Col xs={12} md={6}>
-      //         <ObservationsOverTime data={data} unit='month'/>
-      //       </Col>
-      //       <Col xs={12} md={6}>
-      //         <ObservationsOverTime data={data} unit='day'/>
-      //       </Col>
-      //     </Row>
-      // </Container>
   }
 }

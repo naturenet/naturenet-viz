@@ -56,16 +56,10 @@ export const binByTime = (inputData, field = 'created_at', unit = 'month') => {
     return moment(d[field]).startOf(unit)
   })
 
-  // console.log('data', data)
-  // return []
-
   const startTime = _.min(_.map(data))
   const endTime = _.max(_.map(data))
   const duration = (endTime - startTime)
-  //
-  // const numOfBins = 5
-  // const durationPerBin = duration / numOfBins
-  // console.log(endTime.diff(startTime, unit), unit)
+
   let unitCounts = endTime.diff(startTime, unit)
   let i = 0
   let o = startTime
@@ -75,21 +69,9 @@ export const binByTime = (inputData, field = 'created_at', unit = 'month') => {
     data.push(o)
   }
 
-  //
-
-  // const processedData = _(data)
-  //   .map(f=>f)
-  //   .filter(f=>f[field])
-  //   .map((d) => {
-  //     return {
-  //       ...d,
-  //       binId: Math.ceil((d[field] - startTime) / durationPerBin)
-  //     }
-  //   })
-  //   .value()
 
   const groups = _.groupBy(data)
-  console.log('groups', groups)
+  // console.log('groups', groups)
 
   const bins = _(groups)
     .map((g, key) => {
