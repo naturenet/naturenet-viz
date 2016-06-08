@@ -3,9 +3,9 @@ require('firebase/database')
 require('firebase/auth')
 
 var config = {
-    apiKey: "AIzaSyChM0Tmrj_K_SJd4IqQBlOfzDC61xMFguU",
-    authDomain: "naturenet-testing.firebaseapp.com",
-    databaseURL: "https://naturenet-testing.firebaseio.com",
-    storageBucket: "naturenet-testing.appspot.com",
-  };
+   apiKey: "AIzaSyB_Nm4x_qQqB6toSi235F3sl5W27fLtGGc",
+   authDomain: "nn-viz.firebaseapp.com",
+   databaseURL: "https://nn-viz.firebaseio.com",
+   storageBucket: "nn-viz.appspot.com",
+ };
 firebase.initializeApp(config);

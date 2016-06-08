@@ -4,13 +4,13 @@ import classes from './Header.scss'
 
 export const Header = () => (
   <div>
-    <h1>React Redux Starter Kit</h1>
+    <h1>NatureNet - Research Data Visualization </h1>
     <IndexLink to='/' activeClassName={classes.activeRoute}>
       Home
     </IndexLink>
     {' · '}
-    <Link to='/counter' activeClassName={classes.activeRoute}>
-      Counter
+    <Link to='/Viz' activeClassName={classes.activeRoute}>
+      Viz
     </Link>
   </div>
 )
