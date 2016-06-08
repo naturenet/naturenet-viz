@@ -4,10 +4,14 @@ import classes from './Header.scss'
 
 
 import AppBar from 'material-ui/AppBar';
+import * as Colors from 'material-ui/styles/colors'
 
 export const Header = () =>
   <AppBar
-    title="NatureNet - Viz"
+    style={{
+      backgroundColor: Colors.lightGreen800
+    }}
+    title="NatureNet: Research Viz"
     iconClassNameRight="muidocs-icon-navigation-expand-more"
   />
 
